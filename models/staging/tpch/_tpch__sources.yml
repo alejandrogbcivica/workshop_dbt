@@ -1,0 +1,168 @@
+version: 2
+
+sources:
+  - name: tpch
+    description: "TPC-H sample dataset at scale factor 1 (SF1)"
+    database: workshop_{{ env_var('DBT_ENVIRONMENT') }}_bronze
+    schema: tpch_sf1
+    freshness:
+      warn_after: {count: 1, period: day}
+      error_after: {count: 2, period: day}
+    loaded_at_field: loaded_at
+    tables:
+
+      - name: customer
+        description: "Customers in the TPC-H dataset"
+        tests:
+          - dbt_expectations.expect_table_row_count_to_be_between:
+              min_value: 1
+        columns:
+          - name: c_custkey
+            description: "Primary key"
+            tests:
+              - not_null
+              - unique
+          - name: c_name
+            description: "Customer name"
+            tests:
+              - not_null
+          - name: c_nationkey
+            description: "Foreign key to nation"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'nation')
+                  field: n_nationkey
+          - name: c_mktsegment
+            description: "Market segment"
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: orders
+        description: "Orders placed by customers"
+        columns:
+          - name: o_orderkey
+            description: "Primary key"
+            tests:
+              - not_null
+              - unique
+          - name: o_custkey
+            description: "Foreign key to customer"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'customer')
+                  field: c_custkey
+          - name: o_orderstatus
+            description: "Order status flag"
+            tests:
+              - accepted_values:
+                  values: ['F','O','P']
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: lineitem
+        description: "Line items within orders"
+        columns:
+          - name: l_orderkey
+            description: "Foreign key to orders"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'orders')
+                  field: o_orderkey
+          - name: l_partkey
+            description: "Foreign key to part"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'part')
+                  field: p_partkey
+          - name: l_suppkey
+            description: "Foreign key to supplier"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'supplier')
+                  field: s_suppkey
+          - name: l_quantity
+            description: "Quantity ordered"
+            tests:
+              - dbt_expectations.expect_column_values_to_be_between:
+                  min_value: 1
+                  max_value: 50
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: part
+        description: "Parts that can be ordered"
+        columns:
+          - name: p_partkey
+            description: "Primary key"
+            tests:
+              - not_null
+              - unique
+          - name: p_type
+            description: "Part type"
+          - name: p_size
+            description: "Part size"
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: supplier
+        description: "Suppliers providing parts"
+        columns:
+          - name: s_suppkey
+            description: "Primary key"
+            tests:
+              - not_null
+              - unique
+          - name: s_nationkey
+            description: "Foreign key to nation"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'nation')
+                  field: n_nationkey
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: partsupp
+        description: "Parts supplied by suppliers"
+        columns:
+          - name: ps_partkey
+            description: "Foreign key to part"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'part')
+                  field: p_partkey
+          - name: ps_suppkey
+            description: "Foreign key to supplier"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'supplier')
+                  field: s_suppkey
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: nation
+        description: "Nations in TPC-H"
+        columns:
+          - name: n_nationkey
+            description: "Primary key"
+            tests:
+              - not_null
+              - unique
+          - name: n_regionkey
+            description: "Foreign key to region"
+            tests:
+              - relationships:
+                  to: source('tpch_sf1', 'region')
+                  field: r_regionkey
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"
+
+      - name: region
+        description: "Regions grouping nations"
+        columns:
+          - name: r_regionkey
+            description: "Primary key"
+            tests:
+              - not_null
+              - unique
+          - name: loaded_at
+            description: "UTC timestamp of when the data was loaded"

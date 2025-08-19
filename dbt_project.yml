@@ -44,7 +44,7 @@ models:
         +schema: tpch_demo
         +materialized: table
     staging:
-      tpch_sf1:
+      tpch:
         +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_silver"
-        +schema: tpch_sf1
+        +schema: tpch
         +materialized: table
