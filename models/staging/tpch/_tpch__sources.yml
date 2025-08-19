@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: tpch
     description: "TPC-H sample dataset at scale factor 1 (SF1)"
-    database: workshop_{{ env_var('DBT_ENVIRONMENT') }}_bronze
+    database: workshop_{{ env_var('DBT_SOURCE_ENVIRONMENT') }}_bronze
     schema: tpch_sf1
     freshness:
       warn_after: {count: 1, period: day}
