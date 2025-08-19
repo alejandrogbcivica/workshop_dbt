@@ -1,0 +1,221 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: "Customer dimension built from stg_tpch__customer (conformed with nation/region via hashed ids)."
+    columns:
+      - name: id_customer
+        description: "Surrogate key (hash of customer natural key)."
+        tests:
+          - not_null
+          - unique
+      - name: id_nation
+        description: "FK to dim_nation.id_nation."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_nation')
+              field: id_nation
+      - name: customer_name
+        description: "Customer full name."
+      - name: customer_address
+        description: "Customer address."
+      - name: customer_phone
+        description: "Customer phone."
+      - name: account_balance_usd
+        description: "Account balance in USD."
+      - name: marketing_segment
+        description: "Marketing segment."
+      - name: customer_comment
+        description: "Free Text comment."
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: dim_part
+    description: "Part dimension built from stg_tpch__part."
+    columns:
+      - name: id_part
+        description: "Surrogate key (hash of part natural key)."
+        tests:
+          - not_null
+          - unique
+      - name: part_name
+        description: "Part name."
+      - name: manufacturer
+        description: "Manufacturer."
+      - name: brand
+        description: "Brand."
+      - name: part_type
+        description: "Part type."
+      - name: size_qty
+        description: "Size quantity."
+      - name: container_type
+        description: "Container type."
+      - name: retail_price_usd
+        description: "Retail price in USD."
+      - name: part_comment
+        description: "Free Text comment."
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: dim_nation
+    description: "Nation dimension conformed with region; built from stg_tpch__nation."
+    columns:
+      - name: id_nation
+        description: "Surrogate key (hash of nation natural key)."
+        tests:
+          - not_null
+          - unique
+      - name: id_region
+        description: "FK to dim_region.id_region."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_region')
+              field: id_region
+      - name: nation_key
+        description: "Source natural key (n_nationkey)."
+      - name: region_key
+        description: "Source natural FK (n_regionkey)."
+      - name: nation_name
+        description: "Nation name."
+      - name: nation_comment
+        description: "Free Text comment."
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: dim_region
+    description: "Region dimension built from stg_tpch__region."
+    columns:
+      - name: id_region
+        description: "Surrogate key (hash of region natural key)."
+        tests:
+          - not_null
+          - unique
+      - name: region_name
+        description: "Region name."
+      - name: region_comment
+        description: "Free Text comment."
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: dim_ship_mode
+    description: "Ship mode (small) dimension, distinct values from lineitems."
+    columns:
+      - name: id_ship_mode
+        description: "Surrogate key (hash of ship_mode)."
+        tests:
+          - not_null
+          - unique
+      - name: ship_mode
+        description: "Shipment mode label."
+        tests:
+          - accepted_values:
+              values: ['REG AIR','AIR','RAIL','SHIP','TRUCK','MAIL','FOB']
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: dim_supplier
+    description: "Supplier dimension built from stg_tpch__supplier (conformed with nation/region via hashed ids)."
+    columns:
+      - name: id_supplier
+        description: "Surrogate key (hash of supplier natural key)."
+        tests:
+          - not_null
+          - unique
+      - name: id_nation
+        description: "FK to dim_nation.id_nation."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_nation')
+              field: id_nation
+      - name: supplier_name
+        description: "Supplier name."
+      - name: supplier_address
+        description: "Supplier address."
+      - name: supplier_phone
+        description: "Supplier phone."
+      - name: account_balance_usd
+        description: "Account balance in USD."
+      - name: supplier_comment
+        description: "Free Text comment."
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: fct_order_items
+    description: "Fact table at order line grain; metrics and hashed FKs to conformed dimensions."
+    columns:
+      - name: id_lineitem
+        description: "Surrogate key for line item (hash of orderkey & linenumber)."
+        tests:
+          - not_null
+          - unique
+      - name: id_order
+        description: "Order surrogate id (hash)."
+        tests:
+          - not_null
+      - name: id_part
+        description: "FK to dim_part.id_part."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_part')
+              field: id_part
+      - name: id_supplier
+        description: "FK to dim_supplier.id_supplier."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_supplier')
+              field: id_supplier
+      - name: id_ship_mode
+        description: "FK to dim_ship_mode.id_ship_mode."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_ship_mode')
+              field: id_ship_mode
+
+      - name: order_date
+        description: "Order date (DATE)."
+        tests:
+          - not_null
+      - name: ship_date
+        description: "Ship date (DATE)."
+      - name: commit_date
+        description: "Commit date (DATE)."
+      - name: receipt_date
+        description: "Receipt date (DATE)."
+
+      - name: quantity_qty
+        description: "Ordered quantity."
+      - name: extended_price_usd
+        description: "Extended price in USD (prediscount/pretax)."
+      - name: discount_pct
+        description: "Discount fraction (0,1)."
+      - name: tax_pct
+        description: "Tax fraction (0,1)."
+
+      - name: gross_revenue_usd
+        description: "Extended price before discount and tax."
+      - name: discount_amount_usd
+        description: "Extended price  discount_pct."
+      - name: tax_amount_usd
+        description: "(Extended price  discount_amount)  tax_pct."
+      - name: net_revenue_usd
+        description: "Gross  discount + tax."
+
+      - name: return_flag
+        description: "Return flag."
+      - name: line_status
+        description: "Line status."
+      - name: order_priority
+        description: "Order priority label."
+      - name: order_clerk
+        description: "Order clerk identifier."
+      - name: ship_priority_rank
+        description: "Shipping priority rank."
+
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
