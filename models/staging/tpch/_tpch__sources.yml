@@ -30,7 +30,7 @@ sources:
             description: "Foreign key to nation"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'nation')
+                  to: source('tpch', 'nation')
                   field: n_nationkey
           - name: c_mktsegment
             description: "Market segment"
@@ -49,7 +49,7 @@ sources:
             description: "Foreign key to customer"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'customer')
+                  to: source('tpch', 'customer')
                   field: c_custkey
           - name: o_orderstatus
             description: "Order status flag"
@@ -66,19 +66,19 @@ sources:
             description: "Foreign key to orders"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'orders')
+                  to: source('tpch', 'orders')
                   field: o_orderkey
           - name: l_partkey
             description: "Foreign key to part"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'part')
+                  to: source('tpch', 'part')
                   field: p_partkey
           - name: l_suppkey
             description: "Foreign key to supplier"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'supplier')
+                  to: source('tpch', 'supplier')
                   field: s_suppkey
           - name: l_quantity
             description: "Quantity ordered"
@@ -116,7 +116,7 @@ sources:
             description: "Foreign key to nation"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'nation')
+                  to: source('tpch', 'nation')
                   field: n_nationkey
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
@@ -128,13 +128,13 @@ sources:
             description: "Foreign key to part"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'part')
+                  to: source('tpch', 'part')
                   field: p_partkey
           - name: ps_suppkey
             description: "Foreign key to supplier"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'supplier')
+                  to: source('tpch', 'supplier')
                   field: s_suppkey
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
@@ -151,7 +151,7 @@ sources:
             description: "Foreign key to region"
             tests:
               - relationships:
-                  to: source('tpch_sf1', 'region')
+                  to: source('tpch', 'region')
                   field: r_regionkey
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
