@@ -1,0 +1,333 @@
+version: 2
+
+models:
+  - name: stg_tpch__customer
+    description: "Staging of TPCH customer: readable names, typed fields and audit columns."
+    columns:
+      - name: id_customer
+        description: "Surrogate key (hash of c_custkey)."
+        tests:
+          - not_null
+          - unique
+      - name: id_nation
+        description: "Surrogate FK to nation (hash of c_nationkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__nation')
+              field: id_nation
+      - name: customer_key
+        description: "Natural key from source (c_custkey)."
+      - name: nation_key
+        description: "Natural FK from source (c_nationkey)."
+      - name: customer_name
+        description: "Customer name."
+      - name: customer_address
+        description: "Customer address."
+      - name: customer_phone
+        description: "Customer phone."
+      - name: account_balance_usd
+        description: "Account balance in USD."
+      - name: marketing_segment
+        description: "Marketing segment."
+      - name: customer_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__orders
+    description: "Staging of TPCH orders."
+    columns:
+      - name: id_order
+        description: "Surrogate key (hash of o_orderkey)."
+        tests:
+          - not_null
+          - unique
+      - name: id_customer
+        description: "Surrogate FK to customer (hash of o_custkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__customer')
+              field: id_customer
+      - name: order_key
+        description: "Natural key from source (o_orderkey)."
+      - name: order_status
+        description: "Order status code (F/O/P)."
+      - name: is_fulfilled
+        description: "Derived flag (order_status='F')."
+      - name: order_date_utc
+        description: "Order date (UTC suffix by convention)."
+        tests:
+          - not_null
+      - name: total_price_usd
+        description: "Total order price in USD."
+      - name: order_priority
+        description: "Order priority."
+      - name: order_clerk
+        description: "Clerk identifier."
+      - name: ship_priority_rank
+        description: "Shipping priority rank."
+      - name: order_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__lineitem
+    description: "Staging of TPCH line items."
+    columns:
+      - name: id_lineitem
+        description: "Surrogate key (hash of l_orderkey,l_linenumber)."
+        tests:
+          - not_null
+          - unique
+      - name: id_order
+        description: "Surrogate FK to orders (hash of l_orderkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__orders')
+              field: id_order
+      - name: id_part
+        description: "Surrogate FK to part (hash of l_partkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__part')
+              field: id_part
+      - name: id_supplier
+        description: "Surrogate FK to supplier (hash of l_suppkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__supplier')
+              field: id_supplier
+      - name: line_number
+        description: "Line number within the order."
+        tests:
+          - not_null
+      - name: quantity_qty
+        description: "Ordered quantity."
+      - name: extended_price_usd
+        description: "Extended price in USD (prediscount/pretax)."
+      - name: discount_pct
+        description: "Discount percentage."
+      - name: tax_pct
+        description: "Tax percentage."
+      - name: return_flag
+        description: "Return flag."
+      - name: line_status
+        description: "Line status."
+      - name: ship_date_utc
+        description: "Ship date."
+      - name: commit_date_utc
+        description: "Commit date."
+      - name: receipt_date_utc
+        description: "Receipt date."
+      - name: ship_instructions
+        description: "Shipping instructions."
+      - name: ship_mode
+        description: "Shipping mode."
+      - name: line_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__part
+    description: "Staging of TPCH parts."
+    columns:
+      - name: id_part
+        description: "Surrogate key (hash of p_partkey)."
+        tests:
+          - not_null
+          - unique
+      - name: part_key
+        description: "Natural key from source (p_partkey)."
+      - name: part_name
+        description: "Part name."
+      - name: manufacturer
+        description: "Manufacturer."
+      - name: brand
+        description: "Brand."
+      - name: part_type
+        description: "Part type."
+      - name: size_qty
+        description: "Size quantity."
+      - name: container_type
+        description: "Container type."
+      - name: retail_price_usd
+        description: "Retail price in USD."
+      - name: part_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__supplier
+    description: "Staging of TPCH suppliers."
+    columns:
+      - name: id_supplier
+        description: "Surrogate key (hash of s_suppkey)."
+        tests:
+          - not_null
+          - unique
+      - name: id_nation
+        description: "Surrogate FK to nation (hash of s_nationkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__nation')
+              field: id_nation
+      - name: supplier_key
+        description: "Natural key from source (s_suppkey)."
+      - name: nation_key
+        description: "Natural FK from source (s_nationkey)."
+      - name: supplier_name
+        description: "Supplier name."
+      - name: supplier_address
+        description: "Supplier address."
+      - name: supplier_phone
+        description: "Supplier phone."
+      - name: account_balance_usd
+        description: "Account balance in USD."
+      - name: supplier_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__partsupp
+    description: "Staging of TPCH part–supplier bridge."
+    columns:
+      - name: id_partsupp
+        description: "Surrogate key (hash of ps_partkey,ps_suppkey)."
+        tests:
+          - not_null
+          - unique
+      - name: id_part
+        description: "Surrogate FK to part (hash of ps_partkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__part')
+              field: id_part
+      - name: id_supplier
+        description: "Surrogate FK to supplier (hash of ps_suppkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__supplier')
+              field: id_supplier
+      - name: available_qty
+        description: "Available quantity."
+      - name: supply_cost_usd
+        description: "Supply cost in USD."
+      - name: partsupp_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__nation
+    description: "Staging of TPCH nations."
+    columns:
+      - name: id_nation
+        description: "Surrogate key (hash of n_nationkey)."
+        tests:
+          - not_null
+          - unique
+      - name: id_region
+        description: "Surrogate FK to region (hash of n_regionkey)."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__region')
+              field: id_region
+      - name: nation_key
+        description: "Natural key from source (n_nationkey)."
+      - name: region_key
+        description: "Natural FK from source (n_regionkey)."
+      - name: nation_name
+        description: "Nation name."
+      - name: nation_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
+
+  - name: stg_tpch__region
+    description: "Staging of TPCH regions."
+    columns:
+      - name: id_region
+        description: "Surrogate key (hash of r_regionkey)."
+        tests:
+          - not_null
+          - unique
+      - name: region_key
+        description: "Natural key from source (r_regionkey)."
+      - name: region_name
+        description: "Region name."
+      - name: region_comment
+        description: "Free text comment."
+      - name: loaded_at_utc
+        description: "Ingestion timestamp from bronze (UTC)."
+      - name: staged_at_utc
+        description: "Staging processing timestamp (UTC)."
+      - name: dbt_invocation_id
+        description: "dbt run invocation id."
+      - name: dbt_cloud_run_id
+        description: "dbt Cloud run id."
+      - name: dbt_cloud_job_id
+        description: "dbt Cloud job id."
