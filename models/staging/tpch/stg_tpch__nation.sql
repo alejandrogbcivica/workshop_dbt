@@ -1,3 +1,8 @@
+{{ config(
+    materialized = 'table',
+    tags = ['silver']
+) }}
+
 with source as (
     select *
     from {{ source('tpch','nation') }}

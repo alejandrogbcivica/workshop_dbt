@@ -1,6 +1,20 @@
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'id_order',
+    on_schema_change = 'fail',
+    cluster_by = ['order_date_utc'],
+    tags = ['silver','incremental']
+) }}
+
 with source as (
     select *
     from {{ source('tpch','orders') }}
+    {% if is_incremental() %}
+      where convert_timezone('UTC', loaded_at) > (
+        select coalesce(max(loaded_at_utc), '1900-01-01'::timestamp)
+        from {{ this }}
+      )
+    {% endif %}
 )
 
 , renamed as (
@@ -9,7 +23,7 @@ with source as (
         , {{ dbt_utils.generate_surrogate_key(['o_custkey']) }} as id_customer
         , cast(o_orderkey as number) as order_key
         , o_orderstatus as order_status
-        , case when o_orderstatus = 'F' then true else false end as is_fulfilled
+        , coalesce(o_orderstatus = 'F', false) as is_fulfilled
         , cast(o_orderdate as date) as order_date_utc
         , cast(o_totalprice as decimal(12, 2)) as total_price_usd
         , trim(o_orderpriority) as order_priority

@@ -1,6 +1,20 @@
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'id_lineitem',
+    on_schema_change = 'fail',
+    cluster_by = ['ship_date_utc'],
+    tags = ['silver','incremental']
+) }}
+
 with source as (
     select *
     from {{ source('tpch','lineitem') }}
+    {% if is_incremental() %}
+      where convert_timezone('UTC', loaded_at) > (
+        select coalesce(max(loaded_at_utc), '1900-01-01'::timestamp)
+        from {{ this }}
+      )
+    {% endif %}
 )
 
 , renamed as (
