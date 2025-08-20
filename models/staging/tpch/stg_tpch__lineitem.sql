@@ -45,10 +45,8 @@ with source as (
     where
         l_orderkey is not null
         and l_partkey is not null
-        and l_suppkey is not null
-        and l_linenumber is not null
+        and l_suppkey is not null -- Revisar
 )
 
 select *
 from renamed
-
