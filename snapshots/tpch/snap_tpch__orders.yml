@@ -77,3 +77,4 @@ snapshots:
 
       - name: dbt_valid_to
         description: "Record version end (null = current)."
+        
