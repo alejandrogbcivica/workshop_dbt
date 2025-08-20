@@ -40,7 +40,7 @@ with source as (
         o_orderkey is not null
         and o_custkey is not null
         and o_orderdate is not null
-        --and o_totalprice is not null
+        and o_totalprice is not null
 )
 
 select *
