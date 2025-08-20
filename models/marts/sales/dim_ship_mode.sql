@@ -4,8 +4,7 @@
 
 
 with stage as (
-    select distinct
-        trim(ship_mode) as ship_mode
+    select distinct trim(ship_mode) as ship_mode
     from {{ ref('stg_tpch__lineitem') }}
     where ship_mode is not null
 )

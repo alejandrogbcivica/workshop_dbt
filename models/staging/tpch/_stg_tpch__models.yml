@@ -14,8 +14,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__nation')
-              field: id_nation
+              arguments:
+                to: ref('stg_tpch__nation')
+                field: id_nation
       - name: customer_key
         description: "Natural key from source (c_custkey)."
       - name: nation_key
@@ -56,8 +57,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__customer')
-              field: id_customer
+              arguments:
+                to: ref('stg_tpch__customer')
+                field: id_customer
       - name: order_key
         description: "Natural key from source (o_orderkey)."
       - name: order_status
@@ -102,22 +104,25 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__orders')
-              field: id_order
+              arguments:
+                to: ref('stg_tpch__orders')
+                field: id_order
       - name: id_part
         description: "Surrogate FK to part (hash of l_partkey)."
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__part')
-              field: id_part
+              arguments:
+                to: ref('stg_tpch__part')
+                field: id_part
       - name: id_supplier
         description: "Surrogate FK to supplier (hash of l_suppkey)."
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__supplier')
-              field: id_supplier
+              arguments:
+                to: ref('stg_tpch__supplier')
+                field: id_supplier
       - name: line_number
         description: "Line number within the order."
         tests:
@@ -207,8 +212,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__nation')
-              field: id_nation
+              arguments:
+                to: ref('stg_tpch__nation')
+                field: id_nation
       - name: supplier_key
         description: "Natural key from source (s_suppkey)."
       - name: nation_key
@@ -247,15 +253,17 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__part')
-              field: id_part
+              arguments:
+                to: ref('stg_tpch__part')
+                field: id_part
       - name: id_supplier
         description: "Surrogate FK to supplier (hash of ps_suppkey)."
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__supplier')
-              field: id_supplier
+              arguments:
+                to: ref('stg_tpch__supplier')
+                field: id_supplier
       - name: available_qty
         description: "Available quantity."
       - name: supply_cost_usd
@@ -286,8 +294,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_tpch__region')
-              field: id_region
+              arguments:
+                to: ref('stg_tpch__region')
+                field: id_region
       - name: nation_key
         description: "Natural key from source (n_nationkey)."
       - name: region_key

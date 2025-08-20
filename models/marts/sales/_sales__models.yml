@@ -14,8 +14,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_nation')
-              field: id_nation
+              arguments:
+                to: ref('dim_nation')
+                field: id_nation
       - name: customer_name
         description: "Customer full name."
       - name: customer_address
@@ -54,7 +55,7 @@ models:
       - name: retail_price_usd
         description: "Retail price in USD."
       - name: part_comment
-        description: "Free‑text comment."
+        description: "Free text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -71,8 +72,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_region')
-              field: id_region
+              arguments:
+                to: ref('dim_region')
+                field: id_region
       - name: nation_key
         description: "Source natural key (n_nationkey)."
       - name: region_key
@@ -80,7 +82,7 @@ models:
       - name: nation_name
         description: "Nation name."
       - name: nation_comment
-        description: "Free‑text comment."
+        description: "Free text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -95,7 +97,7 @@ models:
       - name: region_name
         description: "Region name."
       - name: region_comment
-        description: "Free‑text comment."
+        description: "Free text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -111,7 +113,8 @@ models:
         description: "Shipment mode label."
         tests:
           - accepted_values:
-              values: ['REG AIR','AIR','RAIL','SHIP','TRUCK','MAIL','FOB']
+              arguments:
+                values: ['REG AIR','AIR','RAIL','SHIP','TRUCK','MAIL','FOB']
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -128,8 +131,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_nation')
-              field: id_nation
+              arguments:
+                to: ref('dim_nation')
+                field: id_nation
       - name: supplier_name
         description: "Supplier name."
       - name: supplier_address
@@ -139,7 +143,7 @@ models:
       - name: account_balance_usd
         description: "Account balance in USD."
       - name: supplier_comment
-        description: "Free‑text comment."
+        description: "Free text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -162,32 +166,36 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_customer')
-              field: id_customer
+              arguments:
+                to: ref('dim_customer')
+                field: id_customer
 
       - name: id_part
         description: "FK to dim_part.id_part."
         tests:
           - not_null
           - relationships:
-              to: ref('dim_part')
-              field: id_part
+              arguments:
+                to: ref('dim_part')
+                field: id_part
 
       - name: id_supplier
         description: "FK to dim_supplier.id_supplier."
         tests:
           - not_null
           - relationships:
-              to: ref('dim_supplier')
-              field: id_supplier
+              arguments:
+                to: ref('dim_supplier')
+                field: id_supplier
 
       - name: id_ship_mode
         description: "FK to dim_ship_mode.id_ship_mode."
         tests:
           - not_null
           - relationships:
-              to: ref('dim_ship_mode')
-              field: id_ship_mode
+              arguments:
+                to: ref('dim_ship_mode')
+                field: id_ship_mode
 
       - name: order_date
         description: "Order date (DATE)."
@@ -204,18 +212,20 @@ models:
         description: "Order status code."
         tests:
           - accepted_values:
-              values: ['F','O','P']
+              arguments:
+                values: ['F','O','P']
 
       - name: is_fulfilled
         description: "True if order_status = 'F'."
         tests:
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
 
       - name: quantity_qty
         description: "Ordered quantity."
       - name: extended_price_usd
-        description: "Extended price in USD (pre‑discount, pre‑tax)."
+        description: "Extended price in USD (prediscount, pretax)."
       - name: discount_pct
         description: "Discount fraction in [0,1]."
       - name: tax_pct
@@ -224,11 +234,11 @@ models:
       - name: gross_revenue_usd
         description: "Extended price before discount and tax."
       - name: discount_amount_usd
-        description: "Extended price × discount_pct."
+        description: "Extended price x discount_pct."
       - name: tax_amount_usd
-        description: "(Extended price − discount_amount) × tax_pct."
+        description: "(Extended price less discount_amount) x tax_pct."
       - name: net_revenue_usd
-        description: "Gross − discount + tax."
+        description: "Gross less discount + tax."
 
       - name: return_flag
         description: "Return flag."
@@ -257,8 +267,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_customer')
-              field: id_customer
+              arguments:
+                to: ref('dim_customer')
+                field: id_customer
       - name: order_date
         description: "Order date (DATE)."
         tests:
@@ -268,13 +279,13 @@ models:
         tests:
           - not_null
       - name: gross_revenue_usd
-        description: "Sum of line extended prices (pre‑discount, pre‑tax)."
+        description: "Sum of line extended prices (prediscount, pretax)."
       - name: discount_amount_usd
         description: "Sum of line discounts."
       - name: tax_amount_usd
         description: "Sum of line taxes."
       - name: net_revenue_usd
-        description: "Gross − discount + tax."
+        description: "Gross less discount + tax."
       - name: order_priority
         description: "Order priority label."
       - name: order_clerk
@@ -285,11 +296,13 @@ models:
         description: "Order status code ('F','O','P')."
         tests:
           - accepted_values:
-              values: ['F','O','P']
+              arguments:
+                values: ['F','O','P']
       - name: is_fulfilled
         description: "True if order_status = 'F'."
         tests:
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
