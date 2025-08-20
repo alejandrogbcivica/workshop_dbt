@@ -36,8 +36,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
+  +transient: false
   workshop_mapfre:
-    # Applies to all files under models/example/
     marts:
       sales:
         +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_gold"
@@ -48,3 +48,10 @@ models:
         +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_silver"
         +schema: tpch
         +materialized: table
+
+snapshots:
+  +transient: false
+  workshop_mapfre:
+    tpch:
+      +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_silver"
+      +schema: tpch

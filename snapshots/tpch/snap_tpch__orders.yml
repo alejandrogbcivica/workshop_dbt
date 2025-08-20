@@ -1,0 +1,40 @@
+version: 2
+
+snapshots:
+  - name: snap_tpch__orders
+    description: "Snapshot of TPCH orders using timestamp strategy (tracks changes by LOADED_AT)."
+    relation: source('tpch','orders')
+
+    config:
+      strategy: timestamp
+      unique_key: o_orderkey
+      updated_at: loaded_at
+      invalidate_hard_deletes: true
+
+    columns:
+      - name: o_orderkey
+        description: "Business key of the order (from source)."
+      - name: o_custkey
+        description: "FK to customer in source."
+      - name: o_orderstatus
+        description: "Order status (F/O/P)."
+      - name: o_totalprice
+        description: "Total price at source."
+      - name: o_orderdate
+        description: "Order date at source."
+      - name: o_orderpriority
+        description: "Priority at source."
+      - name: o_clerk
+        description: "Clerk at source."
+      - name: o_shippriority
+        description: "Ship priority at source."
+      - name: loaded_at
+        description: "Source updated/load timestamp used for snapshot detection."
+      - name: dbt_scd_id
+        description: "dbt snapshot surrogate id."
+      - name: dbt_updated_at
+        description: "Last time dbt saw this version."
+      - name: dbt_valid_from
+        description: "Record version start."
+      - name: dbt_valid_to
+        description: "Record version end (null = current)."
