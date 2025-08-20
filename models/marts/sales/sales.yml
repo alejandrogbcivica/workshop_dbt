@@ -27,7 +27,7 @@ models:
       - name: marketing_segment
         description: "Marketing segment."
       - name: customer_comment
-        description: "Free Text comment."
+        description: "Free‑text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -54,7 +54,7 @@ models:
       - name: retail_price_usd
         description: "Retail price in USD."
       - name: part_comment
-        description: "Free Text comment."
+        description: "Free‑text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -62,7 +62,7 @@ models:
     description: "Nation dimension conformed with region; built from stg_tpch__nation."
     columns:
       - name: id_nation
-        description: "Surrogate key (hash of nation natural key)."
+        description: "Surrogate key (hash of n_nationkey)."
         tests:
           - not_null
           - unique
@@ -80,7 +80,7 @@ models:
       - name: nation_name
         description: "Nation name."
       - name: nation_comment
-        description: "Free Text comment."
+        description: "Free‑text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -88,19 +88,19 @@ models:
     description: "Region dimension built from stg_tpch__region."
     columns:
       - name: id_region
-        description: "Surrogate key (hash of region natural key)."
+        description: "Surrogate key (hash of r_regionkey)."
         tests:
           - not_null
           - unique
       - name: region_name
         description: "Region name."
       - name: region_comment
-        description: "Free Text comment."
+        description: "Free‑text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
   - name: dim_ship_mode
-    description: "Ship mode (small) dimension, distinct values from lineitems."
+    description: "Ship mode dimension (small) built from distinct line item values."
     columns:
       - name: id_ship_mode
         description: "Surrogate key (hash of ship_mode)."
@@ -139,7 +139,7 @@ models:
       - name: account_balance_usd
         description: "Account balance in USD."
       - name: supplier_comment
-        description: "Free Text comment."
+        description: "Free‑text comment."
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -151,10 +151,20 @@ models:
         tests:
           - not_null
           - unique
+
       - name: id_order
         description: "Order surrogate id (hash)."
         tests:
           - not_null
+
+      - name: id_customer
+        description: "FK to dim_customer.id_customer."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: id_customer
+
       - name: id_part
         description: "FK to dim_part.id_part."
         tests:
@@ -162,6 +172,7 @@ models:
           - relationships:
               to: ref('dim_part')
               field: id_part
+
       - name: id_supplier
         description: "FK to dim_supplier.id_supplier."
         tests:
@@ -169,6 +180,7 @@ models:
           - relationships:
               to: ref('dim_supplier')
               field: id_supplier
+
       - name: id_ship_mode
         description: "FK to dim_ship_mode.id_ship_mode."
         tests:
@@ -188,23 +200,35 @@ models:
       - name: receipt_date
         description: "Receipt date (DATE)."
 
+      - name: order_status
+        description: "Order status code."
+        tests:
+          - accepted_values:
+              values: ['F','O','P']
+
+      - name: is_fulfilled
+        description: "True if order_status = 'F'."
+        tests:
+          - accepted_values:
+              values: [true, false]
+
       - name: quantity_qty
         description: "Ordered quantity."
       - name: extended_price_usd
-        description: "Extended price in USD (prediscount/pretax)."
+        description: "Extended price in USD (pre‑discount, pre‑tax)."
       - name: discount_pct
-        description: "Discount fraction (0,1)."
+        description: "Discount fraction in [0,1]."
       - name: tax_pct
-        description: "Tax fraction (0,1)."
+        description: "Tax fraction in [0,1]."
 
       - name: gross_revenue_usd
         description: "Extended price before discount and tax."
       - name: discount_amount_usd
-        description: "Extended price  discount_pct."
+        description: "Extended price × discount_pct."
       - name: tax_amount_usd
-        description: "(Extended price  discount_amount)  tax_pct."
+        description: "(Extended price − discount_amount) × tax_pct."
       - name: net_revenue_usd
-        description: "Gross  discount + tax."
+        description: "Gross − discount + tax."
 
       - name: return_flag
         description: "Return flag."
@@ -217,5 +241,55 @@ models:
       - name: ship_priority_rank
         description: "Shipping priority rank."
 
+      - name: staged_at_utc
+        description: "Build timestamp (UTC)."
+
+  - name: fct_orders
+    description: "Order-level fact table aggregated from fct_order_items; 1 row per order."
+    columns:
+      - name: id_order
+        description: "Surrogate order id (hash)."
+        tests:
+          - not_null
+          - unique
+      - name: id_customer
+        description: "FK to dim_customer.id_customer."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: id_customer
+      - name: order_date
+        description: "Order date (DATE)."
+        tests:
+          - not_null
+      - name: lines_count
+        description: "Number of line items in the order."
+        tests:
+          - not_null
+      - name: gross_revenue_usd
+        description: "Sum of line extended prices (pre‑discount, pre‑tax)."
+      - name: discount_amount_usd
+        description: "Sum of line discounts."
+      - name: tax_amount_usd
+        description: "Sum of line taxes."
+      - name: net_revenue_usd
+        description: "Gross − discount + tax."
+      - name: order_priority
+        description: "Order priority label."
+      - name: order_clerk
+        description: "Order clerk identifier."
+      - name: ship_priority_rank
+        description: "Shipping priority rank."
+      - name: order_status
+        description: "Order status code ('F','O','P')."
+        tests:
+          - accepted_values:
+              values: ['F','O','P']
+      - name: is_fulfilled
+        description: "True if order_status = 'F'."
+        tests:
+          - accepted_values:
+              values: [true, false]
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
