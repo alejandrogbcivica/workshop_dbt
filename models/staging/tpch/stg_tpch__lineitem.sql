@@ -51,3 +51,4 @@ with source as (
 
 select *
 from renamed
+
