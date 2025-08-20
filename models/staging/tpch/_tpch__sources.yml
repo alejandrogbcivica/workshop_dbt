@@ -15,7 +15,8 @@ sources:
         description: "Customers in the TPC-H dataset"
         tests:
           - dbt_expectations.expect_table_row_count_to_be_between:
-              min_value: 1
+              arguments:
+                min_value: 1
         columns:
           - name: c_custkey
             description: "Primary key"
@@ -30,8 +31,9 @@ sources:
             description: "Foreign key to nation"
             tests:
               - relationships:
-                  to: source('tpch', 'nation')
-                  field: n_nationkey
+                  arguments:
+                    to: source('tpch', 'nation')
+                    field: n_nationkey
           - name: c_mktsegment
             description: "Market segment"
           - name: loaded_at
@@ -49,13 +51,15 @@ sources:
             description: "Foreign key to customer"
             tests:
               - relationships:
-                  to: source('tpch', 'customer')
-                  field: c_custkey
+                  arguments:
+                    to: source('tpch', 'customer')
+                    field: c_custkey
           - name: o_orderstatus
             description: "Order status flag"
             tests:
               - accepted_values:
-                  values: ['F','O','P']
+                  arguments:
+                    values: ['F','O','P']
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
 
@@ -66,26 +70,30 @@ sources:
             description: "Foreign key to orders"
             tests:
               - relationships:
-                  to: source('tpch', 'orders')
-                  field: o_orderkey
+                  arguments:
+                    to: source('tpch', 'orders')
+                    field: o_orderkey
           - name: l_partkey
             description: "Foreign key to part"
             tests:
               - relationships:
-                  to: source('tpch', 'part')
-                  field: p_partkey
+                  arguments:
+                    to: source('tpch', 'part')
+                    field: p_partkey
           - name: l_suppkey
             description: "Foreign key to supplier"
             tests:
               - relationships:
-                  to: source('tpch', 'supplier')
-                  field: s_suppkey
+                  arguments:
+                    to: source('tpch', 'supplier')
+                    field: s_suppkey
           - name: l_quantity
             description: "Quantity ordered"
             tests:
               - dbt_expectations.expect_column_values_to_be_between:
-                  min_value: 1
-                  max_value: 50
+                  arguments:
+                    min_value: 1
+                    max_value: 50
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
 
@@ -116,8 +124,9 @@ sources:
             description: "Foreign key to nation"
             tests:
               - relationships:
-                  to: source('tpch', 'nation')
-                  field: n_nationkey
+                  arguments:
+                    to: source('tpch', 'nation')
+                    field: n_nationkey
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
 
@@ -128,14 +137,16 @@ sources:
             description: "Foreign key to part"
             tests:
               - relationships:
-                  to: source('tpch', 'part')
-                  field: p_partkey
+                  arguments:
+                    to: source('tpch', 'part')
+                    field: p_partkey
           - name: ps_suppkey
             description: "Foreign key to supplier"
             tests:
               - relationships:
-                  to: source('tpch', 'supplier')
-                  field: s_suppkey
+                  arguments:
+                    to: source('tpch', 'supplier')
+                    field: s_suppkey
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
 
@@ -151,8 +162,9 @@ sources:
             description: "Foreign key to region"
             tests:
               - relationships:
-                  to: source('tpch', 'region')
-                  field: r_regionkey
+                  arguments:
+                    to: source('tpch', 'region')
+                    field: r_regionkey
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
 
