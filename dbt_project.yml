@@ -39,9 +39,9 @@ models:
   workshop_mapfre:
     # Applies to all files under models/example/
     marts:
-      tpch_demo:
+      sales:
         +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_gold"
-        +schema: tpch_demo
+        +schema: sales
         +materialized: table
     staging:
       tpch:
