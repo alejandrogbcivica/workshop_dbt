@@ -1,0 +1,79 @@
+version: 2
+
+snapshots:
+  - name: snap_tpch__orders
+    description: "Snapshot of TPCH orders using timestamp strategy (tracks changes by LOADED_AT)."
+    relation: source('tpch','orders')
+
+    config:
+      strategy: timestamp
+      unique_key: o_orderkey
+      updated_at: loaded_at
+      invalidate_hard_deletes: true
+      dbt_valid_to_current: "to_date('9999-12-31')"
+
+    tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          arguments:
+            min_value: 1
+
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['o_orderkey', 'dbt_valid_from']
+
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['o_orderkey']
+          config:
+            where: "dbt_valid_to is null"
+
+    columns:
+      - name: o_orderkey
+        description: "Business key of the order (from source)."
+        tests:
+          - not_null
+
+      - name: o_custkey
+        description: "FK to customer in source."
+
+      - name: o_orderstatus
+        description: "Order status (F/O/P)."
+
+      - name: o_totalprice
+        description: "Total price at source."
+
+      - name: o_orderdate
+        description: "Order date at source."
+
+      - name: o_orderpriority
+        description: "Priority at source."
+
+      - name: o_clerk
+        description: "Clerk at source."
+
+      - name: o_shippriority
+        description: "Ship priority at source."
+
+      - name: loaded_at
+        description: "Source updated/load timestamp used for snapshot detection."
+        tests:
+          - not_null
+
+      - name: dbt_scd_id
+        description: "dbt snapshot surrogate id."
+        tests:
+          - not_null
+          - unique
+
+      - name: dbt_updated_at
+        description: "Last time dbt saw this version."
+        tests:
+          - not_null
+
+      - name: dbt_valid_from
+        description: "Record version start."
+        tests:
+          - not_null
+
+      - name: dbt_valid_to
+        description: "Record version end (null = current)."
