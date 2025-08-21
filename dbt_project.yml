@@ -12,7 +12,7 @@ profile: 'default'
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
-model-paths: ["models"]
+model-paths: ["models", "groups"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
 seed-paths: ["seeds"]
@@ -40,6 +40,7 @@ models:
   workshop_mapfre:
     marts:
       sales:
+        +group: sales
         +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_gold"
         +schema: sales
         +materialized: table

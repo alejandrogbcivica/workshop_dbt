@@ -73,6 +73,8 @@ models:
 
   - name: dim_part
     description: "Part dimension built from stg_tpch__part."
+    config:
+      access: protected
     columns:
       - name: id_part
         description: "Surrogate key (hash of part natural key)."
@@ -100,6 +102,8 @@ models:
 
   - name: dim_nation
     description: "Nation dimension conformed with region; built from stg_tpch__nation."
+    config:
+      access: private
     columns:
       - name: id_nation
         description: "Surrogate key (hash of n_nationkey)."

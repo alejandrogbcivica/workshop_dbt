@@ -1,0 +1,8 @@
+groups:
+  - name: sales
+    owner:
+      email: example@civica-soft.com
+    description: "Sales Team"
+    config:
+      meta:
+        data_owner: Sales team
