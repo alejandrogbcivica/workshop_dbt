@@ -1,5 +1,6 @@
 {{ config(
-    materialized='table'
+    materialized='table',
+    event_time='order_date'
     ) }}
 
 with li as (

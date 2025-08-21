@@ -3,6 +3,7 @@
     unique_key = 'id_lineitem',
     on_schema_change = 'fail',
     cluster_by = ['ship_date_utc'],
+    event_time='ship_date_utc',
     tags = ['silver','incremental']
 ) }}
 
