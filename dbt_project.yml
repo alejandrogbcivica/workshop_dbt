@@ -37,6 +37,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   +transient: false
+  +persist_docs:
+    relation: true
+    columns: true
   workshop_mapfre:
     marts:
       sales:
@@ -52,6 +55,9 @@ models:
 
 snapshots:
   +transient: false
+  +persist_docs:
+    relation: true
+    columns: true
   workshop_mapfre:
     tpch:
       +database: "workshop_{{ env_var('DBT_ENVIRONMENT') }}_silver"
