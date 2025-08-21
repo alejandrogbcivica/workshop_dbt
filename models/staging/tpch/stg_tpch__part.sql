@@ -12,6 +12,12 @@ with source as (
         , trim(p_brand) as brand
         , trim(p_type) as part_type
         , cast(p_size as number) as size_qty
+        , case
+            when cast(p_size as number) < 10 then 'Small'
+            when cast(p_size as number) < 100 then 'Medium'
+            when cast(p_size as number) > 100 then 'Large'
+            else 'Unknown'
+        end as size_category
         , trim(p_container) as container_type
         , cast(p_retailprice as decimal(12, 2)) as retail_price_usd
         , trim(p_comment) as part_comment
