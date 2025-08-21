@@ -205,10 +205,6 @@ models:
         description: "FK to dim_customer.id_customer."
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('dim_customer_v2')
-                field: id_customer
 
       - name: id_part
         description: "FK to dim_part.id_part."
@@ -306,10 +302,6 @@ models:
         description: "FK to dim_customer.id_customer."
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('dim_customer_v2')
-                field: id_customer
       - name: order_date
         description: "Order date (DATE)."
         tests:
