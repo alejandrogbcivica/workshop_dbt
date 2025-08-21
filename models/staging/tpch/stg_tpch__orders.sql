@@ -3,6 +3,7 @@
     unique_key = 'id_order',
     on_schema_change = 'fail',
     cluster_by = ['order_date_utc'],
+    event_time='order_date_utc',
     tags = ['silver','incremental']
 ) }}
 

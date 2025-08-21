@@ -1,5 +1,6 @@
 {{ config(
-    materialized='table'
+    materialized='table',
+    event_time='order_date'
     ) }}
 
 -- Aggregate metrics by order_id from fct_order_items
