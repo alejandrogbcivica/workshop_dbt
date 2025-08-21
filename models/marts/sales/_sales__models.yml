@@ -3,14 +3,22 @@ version: 2
 models:
   - name: dim_customer
     description: "Customer dimension built from stg_tpch__customer (conformed with nation/region via hashed ids)."
+    latest_version: 2
+    config:
+      contract:
+        enforced: true
+      access: public
+
     columns:
       - name: id_customer
-        description: "Surrogate key (hash of customer natural key)."
+        description: "Surrogate key (MD5 hash of customer natural key)."
+        data_type: varchar(32)
         tests:
           - not_null
           - unique
       - name: id_nation
-        description: "FK to dim_nation.id_nation."
+        description: "FK to dim_nation.id_nation (hashed)."
+        data_type: varchar(32)
         tests:
           - not_null
           - relationships:
@@ -19,18 +27,49 @@ models:
                 field: id_nation
       - name: customer_name
         description: "Customer full name."
+        data_type: varchar
       - name: customer_address
         description: "Customer address."
+        data_type: varchar
       - name: customer_phone
         description: "Customer phone."
+        data_type: varchar
       - name: account_balance_usd
         description: "Account balance in USD."
+        data_type: number(12,2)
       - name: marketing_segment
         description: "Marketing segment."
+        data_type: varchar
       - name: customer_comment
-        description: "Free‑text comment."
+        description: "Free-text comment."
+        data_type: varchar
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
+        data_type: timestamp_tz
+
+    versions:
+      - v: 1
+
+      - v: 2
+        config:
+          alias: dim_customer
+        columns:
+          - include: all
+          - name: customer_tier
+            description: "Tier derived from account_balance_usd (gold/silver/bronze)."
+            data_type: varchar(20)
+            tests:
+              - not_null
+
+      - v: 3
+        columns:
+          - include: all
+            exclude: [customer_tier]
+          - name: customer_category
+            description: "Renamed from v2 'customer_tier'; same derivation."
+            data_type: varchar(20)
+            tests:
+              - not_null
 
   - name: dim_part
     description: "Part dimension built from stg_tpch__part."
@@ -114,7 +153,8 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['REG AIR','AIR','RAIL','SHIP','TRUCK','MAIL','FOB']
+                values:
+                  ["REG AIR", "AIR", "RAIL", "SHIP", "TRUCK", "MAIL", "FOB"]
       - name: staged_at_utc
         description: "Build timestamp (UTC)."
 
@@ -167,7 +207,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_customer')
+                to: ref('dim_customer_v2')
                 field: id_customer
 
       - name: id_part
@@ -213,7 +253,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['F','O','P']
+                values: ["F", "O", "P"]
 
       - name: is_fulfilled
         description: "True if order_status = 'F'."
@@ -268,7 +308,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_customer')
+                to: ref('dim_customer_v2')
                 field: id_customer
       - name: order_date
         description: "Order date (DATE)."
@@ -297,7 +337,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['F','O','P']
+                values: ["F", "O", "P"]
       - name: is_fulfilled
         description: "True if order_status = 'F'."
         tests:
