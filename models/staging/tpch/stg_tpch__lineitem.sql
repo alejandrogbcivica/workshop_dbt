@@ -18,7 +18,7 @@ with source as (
     {% endif %}
 )
 
-, renamed as (
+, transform as (
     select
         {{ dbt_utils.generate_surrogate_key(['l_orderkey','l_linenumber']) }} as id_lineitem
         , {{ dbt_utils.generate_surrogate_key(['l_orderkey']) }} as id_order
@@ -51,4 +51,4 @@ with source as (
 )
 
 select *
-from renamed
+from transform
