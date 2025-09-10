@@ -60,6 +60,11 @@ sources:
               - accepted_values:
                   arguments:
                     values: ['F','O','P']
+          - name: o_orderdate
+            tests:
+              - not_future_date:
+                  arguments:
+                    allow_today: false
           - name: loaded_at
             description: "UTC timestamp of when the data was loaded"
 
