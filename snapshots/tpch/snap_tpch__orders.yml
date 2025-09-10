@@ -10,7 +10,7 @@ snapshots:
       unique_key: o_orderkey
       updated_at: loaded_at
       invalidate_hard_deletes: true
-      dbt_valid_to_current: "to_date('9999-12-31')"
+      dbt_valid_to_current: TO_TIMESTAMP_TZ('9999-12-31 00:00:00 UTC', 'YYYY-MM-DD HH24:MI:SS TZD')
 
     tests:
       - dbt_expectations.expect_table_row_count_to_be_between:
