@@ -5,10 +5,11 @@ sources:
     description: "TPC-H sample dataset at scale factor 1 (SF1)"
     database: workshop_{{ env_var('DBT_SOURCE_ENVIRONMENT') }}_bronze
     schema: tpch_sf1
-    freshness:
-      warn_after: {count: 100, period: day}
-      error_after: {count: 365, period: day}
-    loaded_at_field: loaded_at
+    config:
+      freshness:
+        warn_after: {count: 100, period: day}
+        error_after: {count: 365, period: day}
+      loaded_at_field: loaded_at
     tables:
 
       - name: customer
