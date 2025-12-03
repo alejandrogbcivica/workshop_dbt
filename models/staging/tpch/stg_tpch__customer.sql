@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'table',
-    tags = ['silver']
+    tags = ['silver'],
 ) }}
 
 with source as (
@@ -25,7 +25,7 @@ with source as (
         , '{{ invocation_id }}' as dbt_invocation_id
         , '{{ env_var("DBT_CLOUD_RUN_ID","local") }}' as dbt_cloud_run_id
         , '{{ env_var("DBT_CLOUD_JOB_ID","manual") }}' as dbt_cloud_job_id
-        , 'a' as test_ci
+        , 'b' as test_ci
     from source
     where
         c_custkey is not null
