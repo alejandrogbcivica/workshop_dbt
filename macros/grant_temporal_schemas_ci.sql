@@ -57,7 +57,7 @@
           -- 2. Grant SELECT on all existing Tables/Views
           GRANT SELECT ON ALL TABLES IN SCHEMA {{ db_name }}.{{ schema_name }} TO ROLE {{ operator_role }};
           GRANT SELECT ON ALL VIEWS IN SCHEMA {{ db_name }}.{{ schema_name }} TO ROLE {{ operator_role }};
-          GRANT SELECT ON DYNAMIC TABLES IN SCHEMA {{ db_name }}.{{ schema_name }} TO ROLE {{ operator_role }};
+          GRANT SELECT ON ALL DYNAMIC TABLES IN SCHEMA {{ db_name }}.{{ schema_name }} TO ROLE {{ operator_role }};
         {% endset %}
         
         {% do run_query(grant_sql) %}
