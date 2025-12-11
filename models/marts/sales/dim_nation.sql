@@ -7,13 +7,5 @@ with stage as (
     from {{ ref('stg_tpch__nation') }}
 )
 
-select
-    id_nation
-    , id_region
-    , nation_key
-    , region_key
-    , nation_name
-    , nation_comment
-    , 'test' as test
-    , convert_timezone('UTC', current_timestamp()) as staged_at_utc
+select *
 from stage
