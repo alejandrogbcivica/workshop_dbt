@@ -7,5 +7,12 @@ with stage as (
     from {{ ref('stg_tpch__nation') }}
 )
 
-select *
+select
+    id_nation
+    , id_region
+    , nation_key
+    , region_key
+    , nation_name
+    , nation_comment
+    , staged_at_utc
 from stage
