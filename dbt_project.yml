@@ -7,9 +7,6 @@ config-version: 2
 dbt-cloud:
     project-id: 445612
 
-dbt-cloud:
-    project-id: 445612
-
 # This setting configures which "profile" dbt uses for this project.
 profile: 'default'
 
