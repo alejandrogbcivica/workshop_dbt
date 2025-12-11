@@ -15,4 +15,5 @@ select
     , nation_name
     , nation_comment
     , convert_timezone('UTC', current_timestamp()) as staged_at_utc
+    , 'test' as test
 from stage
