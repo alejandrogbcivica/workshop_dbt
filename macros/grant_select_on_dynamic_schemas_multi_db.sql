@@ -27,9 +27,7 @@
       {% set find_schemas_sql %}
         SELECT schema_name 
         FROM {{ db_name }}.INFORMATION_SCHEMA.SCHEMATA
-        WHERE schema_name LIKE '{{ schema_prefix }}%' 
-          AND schema_name NOT LIKE '%INFORMATION_SCHEMA' 
-          AND schema_name NOT LIKE '%PUBLIC'
+        WHERE schema_name ILIKE '{{ schema_prefix }}%' 
       {% endset %}
 
       {% set schemas_to_grant = run_query(find_schemas_sql) %}
