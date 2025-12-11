@@ -11,10 +11,10 @@ with source as (
     select *
     from {{ source('tpch','orders') }}
     {% if is_incremental() %}
-      where convert_timezone('UTC', loaded_at) > (
-        select coalesce(max(loaded_at_utc), '1900-01-01'::timestamp)
-        from {{ this }}
-      )
+        where convert_timezone('UTC', loaded_at) > (
+            select coalesce(max(loaded_at_utc), '1900-01-01'::timestamp)
+            from {{ this }}
+        )
     {% endif %}
 )
 
@@ -22,14 +22,14 @@ with source as (
     select
         {{ dbt_utils.generate_surrogate_key(['o_orderkey']) }} as id_order
         , {{ dbt_utils.generate_surrogate_key(['o_custkey']) }} as id_customer
-        , cast(o_orderkey as number) as order_key
+        , o_orderkey::number as order_key
         , o_orderstatus as order_status
         , coalesce(o_orderstatus = 'F', false) as is_fulfilled
-        , cast(o_orderdate as date) as order_date_utc
-        , cast(o_totalprice as decimal(12, 2)) as total_price_usd
+        , o_orderdate::date as order_date_utc
+        , o_totalprice::decimal(12, 2) as total_price_usd
         , trim(o_orderpriority) as order_priority
         , trim(o_clerk) as order_clerk
-        , cast(o_shippriority as number) as ship_priority_rank
+        , o_shippriority::number as ship_priority_rank
         , trim(o_comment) as order_comment
         , loaded_at as loaded_at_utc
         , convert_timezone('UTC', current_timestamp()) as staged_at_utc
