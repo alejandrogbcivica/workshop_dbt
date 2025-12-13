@@ -5,7 +5,7 @@
 
 with li as (
     select *
-    from {{ ref('stg_tpch__lineitem') }}
+    from {{ ref('workshop_mapfre_mesh','stg_tpch__lineitem') }}
 )
 
 , o as (
@@ -18,7 +18,7 @@ with li as (
         , order_priority
         , order_clerk
         , ship_priority_rank
-    from {{ ref('stg_tpch__orders') }}
+    from {{ ref('workshop_mapfre_mesh','stg_tpch__orders') }}
 )
 
 , base as (

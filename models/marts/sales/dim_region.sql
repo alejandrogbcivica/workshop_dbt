@@ -4,7 +4,7 @@
 
 with stage as (
     select *
-    from {{ ref('stg_tpch__region') }}
+    from {{ ref('workshop_mapfre_mesh','stg_tpch__region') }}
 )
 
 select
